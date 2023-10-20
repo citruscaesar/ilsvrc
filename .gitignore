@@ -1,4 +1,6 @@
 # Lightning
+logs/
+checkpoints/
 lightning_logs/
 *.ckpt
 
