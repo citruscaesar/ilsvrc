@@ -44,6 +44,4 @@ class Hyperparameters:
             "learning_rate": self.learning_rate,
             "momentum": self.momentum,
             "weight_decay": self.weight_decay,
-
-            "num_workers": self.num_workers,
         }
