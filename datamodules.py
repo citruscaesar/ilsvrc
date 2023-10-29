@@ -15,9 +15,6 @@ import imageio.v3 as iio
 from torchdata.datapipes.iter import IterDataPipe, Zipper, IterableWrapper
 from torch.utils.data import DataLoader
 from sklearn.preprocessing import LabelEncoder 
-
-from torchvision import disable_beta_transforms_warning
-disable_beta_transforms_warning();
 import torchvision.transforms.v2 as t
 
 from lightning import LightningDataModule
