@@ -163,9 +163,9 @@ class ImagenetteDataModule(LightningDataModule):
         pipe = (pipe 
                     .shuffle(buffer_size=len(self.train_df))
                     #.sharding_filter()
+                    #.prefetch()
                     #.pinned_memory()
                     #.load_image_data()
-                    #.prefetch()
                     #.set_length()
                 )
         pipe = ImageDataLoader(pipe, self.label_encoder, self.transform) #type:ignore 
