@@ -38,7 +38,7 @@ class ImageDataLoader(IterDataPipe):
             label = self._encode_label(label)
             yield (image, label)
      
-    def _load_image(self, image_path: Path) -> torch.Tensor:
+    def _load_image(self, image_path: Path) -> np.ndarray:
         image = (iio.imread(uri = image_path,
                            plugin = "pillow",
                            extension = ".jpg")
@@ -96,6 +96,7 @@ class ImagenetteDataModule(LightningDataModule):
             print("Done!")
     
     def setup(self, stage: str) -> None:
+        assert stage in ("fit", "validate", "test", "predict")
         self._setup_local()
         if stage == "fit":
             self.train_dataset = self._prepare_local_train()
@@ -156,7 +157,10 @@ class ImagenetteDataModule(LightningDataModule):
                 .sort_values("label")
                 .reset_index(drop=True))
 
-        self._prepare_label_encoder(df["label"].unique())
+        self._prepare_label_encoder(df["label"].unique().tolist())
+
+    def _prepare_label_encoder(self, class_names: list) -> None:
+        self.label_encoder = LabelEncoder().fit(sorted(class_names))
 
     def _prepare_local_train(self) -> Any:
         pipe = self._datapipe_from_dataframe(self.train_df)
@@ -185,9 +189,6 @@ class ImagenetteDataModule(LightningDataModule):
             IterableWrapper(dataframe.label)
             )
     
-    def _prepare_label_encoder(self, class_names: list) -> None:
-        self.label_encoder = LabelEncoder().fit(sorted(class_names))
-
     def _download_from_url(self, url: str, local_filename: Path) -> None:
         response = requests.head(url)
         file_size = int(response.headers.get("Content-Length", 0))
